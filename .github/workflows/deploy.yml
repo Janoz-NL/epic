@@ -31,7 +31,7 @@ jobs:
           settings-path: ${{ github.workspace }}
 
       - name: Build Jar
-        run: ./mvnw verify "-Dquarkus.native.container-build=false"
+        run: ./mvnw verify "-Dquarkus.native.container-build=false" --settings ${{ github.workspace }}/settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build-native:
@@ -66,7 +66,7 @@ jobs:
           settings-path: ${{ github.workspace }}
 
       - name: Build Native Executable
-        run: ./mvnw package "-Dmaven.test.skip" -Dnative "-Dquarkus.native.container-build=false"
+        run: ./mvnw package "-Dmaven.test.skip" -Dnative "-Dquarkus.native.container-build=false" --settings ${{ github.workspace }}/settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
