@@ -27,9 +27,13 @@ jobs:
           java-version: '21'
           distribution: 'graalvm'
           cache: 'maven'
+          server-id: github
+          settings-path: ${{ github.workspace }}
+
       - name: Build Jar
         run: ./mvnw verify "-Dquarkus.native.container-build=false"
-
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build-native:
     name: Build Native Binary (${{ matrix.arch }})
     # Depends on build-Jar for securing successful test
@@ -58,9 +62,13 @@ jobs:
           java-version: '21'
           distribution: 'graalvm'
           cache: 'maven'
+          server-id: github
+          settings-path: ${{ github.workspace }}
 
       - name: Build Native Executable
         run: ./mvnw package "-Dmaven.test.skip" -Dnative "-Dquarkus.native.container-build=false"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Native Artifact
         uses: actions/upload-artifact@v7
