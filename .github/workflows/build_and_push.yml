@@ -24,11 +24,16 @@ jobs:
 
       - name: Unf*ck stupid github git checkout
         run: |
-          # 1. Force fetch all tags explicitly into the local ref space
-          git fetch --tags --force
+          # 1. Clean the workspace directory just in case
+          rm -rf ./* .git
           
-          # 2. Fetch the main branch so Git can bridge the ancestry gap
-          git fetch origin main --depth=1000
+          # 2. Clone the repo using the GitHub token for authentication
+          # We use the full repository URL so it maps all remote tracking branches properly
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git .
+          
+          # 3. Switch to the exact branch you selected for the manual run
+          # This ensures you aren't in a "detached HEAD" state
+          git checkout ${{ github.ref_name }}
 
       - name: Debug Git Tags
         run: |
