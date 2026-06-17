@@ -31,12 +31,11 @@ Because everything is better in a container. You can spin up this bot in seconds
 
 ```bash
 docker run -d \
-  --name epic-boom-box \
+  --name epic \
   -e VOICE.TOKEN="your_discord_bot_token" \
   -e VOICE.CHANNEL="your_voice_channel_id" \
   -p 8080:8080 \
-  your-docker-username/epic:latest
-
+  ghcr.io/janoz-nl/epic:latest
 ```
 
 This will run the bot in detached mode (`-d`), map port `8080` so you can hit it with your HTTP calls, and automatically connect it to your Discord channel.
