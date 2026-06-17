@@ -44,13 +44,13 @@ jobs:
           git describe --tags --always
           RAW_TAGS=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout | awk -F. '{print $1 "," $1"."$2 "," $1"."$2"."$3}')
           echo "Raw tags: $RAW_TAGS"
-          ./mvnw clean package \
-            -DskipTests \
-            -Dquarkus.container-image.build=true \
-            -Dquarkus.container-image.push=true \
-            -Dquarkus.container-image.builder=jib \
-            -Dquarkus.container-image.registry=ghcr.io \
-            -Dquarkus.container-image.group=${{ github.repository_owner }} \
-            -Dquarkus.container-image.name=${{ github.event.repository.name }} \
-            -Dquarkus.container-image.tag=latest \
-            -Dquarkus.container-image.additional-tags=$RAW_TAGS
+#          ./mvnw clean package \
+#            -DskipTests \
+#            -Dquarkus.container-image.build=true \
+#            -Dquarkus.container-image.push=true \
+#            -Dquarkus.container-image.builder=jib \
+#            -Dquarkus.container-image.registry=ghcr.io \
+#            -Dquarkus.container-image.group=${{ github.repository_owner }} \
+#            -Dquarkus.container-image.name=${{ github.event.repository.name }} \
+#            -Dquarkus.container-image.tag=latest \
+#            -Dquarkus.container-image.additional-tags=$RAW_TAGS
