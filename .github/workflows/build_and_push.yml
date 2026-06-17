@@ -16,18 +16,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Unf*ck stupid github git checkout
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Nuclear Git Refspec Fix
         run: |
-          # 1. Clean the workspace directory just in case
-          rm -rf ./* .git
+          # 1. Force Git to track ALL tags and refs explicitly
+          git config --global remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+          git config --add remote.origin.fetch "+refs/tags/*:refs/tags/*"
           
-          # 2. Clone the repo using the GitHub token for authentication
-          # We use the full repository URL so it maps all remote tracking branches properly
-          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git .
-          
-          # 3. Switch to the exact branch you selected for the manual run
-          # This ensures you aren't in a "detached HEAD" state
-          git checkout ${{ github.ref_name }}
+          # 2. Fetch everything with tags forced
+          git fetch --all --tags --force
 
       - name: Debug Git Tags
         run: |
