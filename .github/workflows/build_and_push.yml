@@ -33,17 +33,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract Metadata (Tags/Labels)
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=raw,value=latest
-
       - name: Build and Push with Jib
         run: |
           # Use jq to parse the metadata JSON, extract raw tags, and join them with commas
@@ -58,5 +47,4 @@ jobs:
             -Dquarkus.container-image.registry=ghcr.io \
             -Dquarkus.container-image.group=${{ github.repository_owner }} \
             -Dquarkus.container-image.name=${{ github.event.repository.name }} \
-            -Dquarkus.container-image.tag=latest \
-            -Dquarkus.container-image.additional-tags=$RAW_TAGS
+            -Dquarkus.container-image.additional-tags=latest
