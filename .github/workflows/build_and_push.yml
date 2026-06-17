@@ -35,10 +35,8 @@ jobs:
 
       - name: Build and Push with Jib
         run: |
-          # Use jq to parse the metadata JSON, extract raw tags, and join them with commas
-          RAW_TAGS=$(echo '${{ steps.meta.outputs.json }}' | jq -r '.tags | map(split(":")[1]) | join(",")')
+          RAW_TAGS=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout | awk -F. '{print $1 "," $1"."$2 "," $1"."$2"."$3}')
           echo "Raw tags: $RAW_TAGS"
-          # We pass 'latest' as the primary tag, and the semver tags as additional tags
           ./mvnw clean package \
             -DskipTests \
             -Dquarkus.container-image.build=true \
@@ -47,4 +45,5 @@ jobs:
             -Dquarkus.container-image.registry=ghcr.io \
             -Dquarkus.container-image.group=${{ github.repository_owner }} \
             -Dquarkus.container-image.name=${{ github.event.repository.name }} \
-            -Dquarkus.container-image.additional-tags=latest
+            -Dquarkus.container-image.tag=latest \
+            -Dquarkus.container-image.additional-tags=$RAW_TAGS
