@@ -22,17 +22,6 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-#      - name: Force Native Object Sync
-#        run: |
-#          # 2. Clear the restrictive refspec GitHub sets by default
-#          git config --unset-all remote.origin.fetch || true
-#
-#          # 3. Set the exact standard refspec your local machine uses
-#          git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-#
-#          # 4. Force a raw fetch of ALL refs and tags down to the object level
-#          git fetch --prune --tags --force origin
-
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -52,13 +41,13 @@ jobs:
           git describe --tags --always
           RAW_TAGS=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout | awk -F. '{print $1 "," $1"."$2 "," $1"."$2"."$3}')
           echo "Raw tags: $RAW_TAGS"
-#          ./mvnw clean package \
-#            -DskipTests \
-#            -Dquarkus.container-image.build=true \
-#            -Dquarkus.container-image.push=true \
-#            -Dquarkus.container-image.builder=jib \
-#            -Dquarkus.container-image.registry=ghcr.io \
-#            -Dquarkus.container-image.group=${{ github.repository_owner }} \
-#            -Dquarkus.container-image.name=${{ github.event.repository.name }} \
-#            -Dquarkus.container-image.tag=latest \
-#            -Dquarkus.container-image.additional-tags=$RAW_TAGS
+          ./mvnw clean package \
+            -DskipTests \
+            -Dquarkus.container-image.build=true \
+            -Dquarkus.container-image.push=true \
+            -Dquarkus.container-image.builder=jib \
+            -Dquarkus.container-image.registry=ghcr.io \
+            -Dquarkus.container-image.group=${{ github.repository_owner }} \
+            -Dquarkus.container-image.name=${{ github.event.repository.name }} \
+            -Dquarkus.container-image.tag=latest \
+            -Dquarkus.container-image.additional-tags=$RAW_TAGS
