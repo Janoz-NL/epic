@@ -44,23 +44,19 @@ jobs:
             type=semver,pattern={{major}}
             type=raw,value=latest
 
-      - name: Build Application Package
-        run: ./mvnw clean package
-
-      - name: Push Images via Jib
+      - name: Build and Push with Jib
         run: |
-          # Convert the multiline string of tags into an array
-          echo "${{ steps.meta.outputs.tags }}" | while read -r image_with_tag; do
-            if [ -n "$image_with_tag" ]; then
-              # Extract just the tag part from the full image string (everything after the colon)
-              TAG=$(echo "$image_with_tag" | awk -F':' '{print $2}')
+          # Use jq to parse the metadata JSON, extract raw tags, and join them with commas
+          RAW_TAGS=$(echo '${{ steps.meta.outputs.json }}' | jq -r '.tags | map(split(":")[1]) | join(",")')
           
-              echo "Pushing tag: $TAG"
-              ./mvnw quarkus:container-image-push \
-                -Dquarkus.container-image.builder=jib \
-                -Dquarkus.container-image.registry=${{ env.REGISTRY }} \
-                -Dquarkus.container-image.group=${{ github.repository_owner }} \
-                -Dquarkus.container-image.name=${{ github.event.repository.name }} \
-                -Dquarkus.container-image.tag=$TAG
-            fi
-          done
+          # We pass 'latest' as the primary tag, and the semver tags as additional tags
+          ./mvnw clean package \
+            -DskipTests \
+            -Dquarkus.container-image.build=true \
+            -Dquarkus.container-image.push=true \
+            -Dquarkus.container-image.builder=jib \
+            -Dquarkus.container-image.registry=ghcr.io \
+            -Dquarkus.container-image.group=${{ github.repository_owner }} \
+            -Dquarkus.container-image.name=${{ github.event.repository.name }} \
+            -Dquarkus.container-image.tag=latest \
+            -Dquarkus.container-image.additional-tags=$RAW_TAGS
