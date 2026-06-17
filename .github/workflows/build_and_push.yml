@@ -19,9 +19,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          ref: ${{ github.head_ref || github.ref }}
+          ref: ${{ github.ref }}
           fetch-depth: 0
-          fetch-tags: 'true'
+
+      - name: Force fetch all tags and history
+        run: |
+          git fetch --prune --unshallow --tags
 
       - name: Debug Git Tags
         run: |
