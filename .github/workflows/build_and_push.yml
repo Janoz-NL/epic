@@ -32,12 +32,6 @@ jobs:
           # 4. Force a raw fetch of ALL refs and tags down to the object level
           git fetch --prune --tags --force origin
 
-      - name: Debug Git Tags
-        run: |
-          git log --oneline -n 5
-          git tag -l
-          git describe --tags --always
-
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
