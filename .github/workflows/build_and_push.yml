@@ -41,6 +41,7 @@ jobs:
 
       - name: Build and Push with Jib
         run: |
+          git describe --tags --always
           RAW_TAGS=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout | awk -F. '{print $1 "," $1"."$2 "," $1"."$2"."$3}')
           echo "Raw tags: $RAW_TAGS"
           ./mvnw clean package \
